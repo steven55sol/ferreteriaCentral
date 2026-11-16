@@ -634,16 +634,19 @@ $enlacePanel = $autenticado ? "view/dashboard.php" : "view/login.php";
                 border-top: 1px solid rgba(255, 255, 255, 0.08);
             }
 
-            .ferro-panel__row i {
+            .ferro-panel__row > i,
+            .ferro-panel__row > svg.svg-inline--fa {
                 display: grid;
                 place-items: center;
                 flex: 0 0 auto;
                 width: 38px;
                 height: 38px;
+                padding: 0.65rem;
+                box-sizing: border-box;
                 border-radius: 11px;
                 background: rgba(245, 165, 36, 0.12);
                 border: 1px solid rgba(245, 165, 36, 0.25);
-                color: #ffffff;
+                color: var(--ferro-amber-light);
                 font-size: 0.95rem;
             }
 
