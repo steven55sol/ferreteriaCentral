@@ -9,46 +9,59 @@ $rolUsuario    = $autenticado ? (string) ($_SESSION["rol"] ?? "") : "";
 
 $nombreFerreteria = "Ferretería Central";
 
+// Helper de permisos: el Admin tiene todos los módulos y cada usuario
+// solo los que le fueron asignados.
+if (!function_exists("tienePermiso")) {
+    require_once __DIR__ . "/model/permisos.php";
+}
+
 // El menú lateral y el botón hamburguesa solo se muestran con sesión activa.
 $ocultarSidebar  = !$autenticado;
 
 // Módulos reales del sistema: se muestran como accesos rápidos.
+// "clave" es el nombre del permiso que exige cada módulo.
 $modulos = [
     [
         "icono"  => "fa-cash-register",
         "titulo" => "Ventas",
         "texto"  => "Registra la salida de mercadería y controla la caja del día.",
         "url"    => "view/ventas.php",
+        "clave"  => "ventas",
     ],
     [
         "icono"  => "fa-boxes-stacked",
         "titulo" => "Productos",
         "texto"  => "Catálogo con precios, categorías y existencias actualizadas.",
         "url"    => "view/productos.php",
+        "clave"  => "productos",
     ],
     [
         "icono"  => "fa-cart-shopping",
         "titulo" => "Compras",
         "texto"  => "Ingresa mercadería y actualiza el stock automáticamente.",
         "url"    => "view/compras.php",
+        "clave"  => "compras",
     ],
     [
         "icono"  => "fa-users",
         "titulo" => "Clientes",
         "texto"  => "Información de tus compradores para un mejor servicio.",
         "url"    => "view/clientes.php",
+        "clave"  => "clientes",
     ],
     [
         "icono"  => "fa-truck-fast",
         "titulo" => "Proveedores",
         "texto"  => "Contactos y suministros de toda tu cadena de abastecimiento.",
         "url"    => "view/proveedores.php",
+        "clave"  => "proveedores",
     ],
     [
         "icono"  => "fa-chart-line",
         "titulo" => "Reportes",
         "texto"  => "Stock, ventas y kardex listos para revisar o exportar.",
         "url"    => "view/dashboard.php",
+        "clave"  => "dashboard",
     ],
 ];
 
@@ -543,6 +556,37 @@ $enlacePanel = $autenticado ? "view/dashboard.php" : "view/login.php";
                 transform: translateX(4px);
             }
 
+            /* Tarjeta de módulo sin permiso */
+            .ferro-card--locked {
+                background: #f7f9fb;
+                cursor: not-allowed;
+            }
+
+            .ferro-card--locked:hover {
+                transform: none;
+                border-color: var(--ferro-line);
+                box-shadow: 0 1px 2px rgba(16, 24, 32, 0.04);
+            }
+
+            .ferro-card--locked:hover::before {
+                opacity: 0;
+            }
+
+            .ferro-card--locked .ferro-card__icon {
+                background: #eef1f5;
+                border-color: #e2e8ef;
+                color: #94a3b8;
+            }
+
+            .ferro-card__link--locked,
+            .ferro-card--locked:hover .ferro-card__link--locked {
+                color: #94a3b8;
+            }
+
+            .ferro-card--locked:hover .ferro-card__link i {
+                transform: none;
+            }
+
             /* ---------- CATEGORÍAS ---------- */
             .ferro-cat {
                 display: flex;
@@ -992,18 +1036,37 @@ $enlacePanel = $autenticado ? "view/dashboard.php" : "view/login.php";
 
                             <div class="row g-3 g-lg-4">
                                 <?php foreach ($modulos as $modulo): ?>
+                                    <?php
+                                    // Sin sesión: todas las tarjetas llevan al login.
+                                    // Con sesión: solo se puede abrir si tiene el permiso.
+                                    $permitido = !$autenticado || tienePermiso($modulo["clave"]);
+                                    ?>
                                     <div class="col-sm-6 col-xl-4">
+                                        <?php if ($permitido): ?>
                                         <a class="ferro-card" href="<?= $autenticado ? $modulo["url"] : "view/login.php" ?>">
+                                        <?php else: ?>
+                                        <div class="ferro-card ferro-card--locked" aria-disabled="true">
+                                        <?php endif; ?>
                                             <div class="ferro-card__icon">
                                                 <i class="fas <?= $modulo["icono"] ?>"></i>
                                             </div>
                                             <h3 class="ferro-card__title"><?= htmlspecialchars($modulo["titulo"]) ?></h3>
                                             <p class="ferro-card__text"><?= htmlspecialchars($modulo["texto"]) ?></p>
-                                            <span class="ferro-card__link">
-                                                <?= $autenticado ? "Abrir módulo" : "Iniciar sesión" ?>
-                                                <i class="fas fa-arrow-right"></i>
-                                            </span>
+                                            <?php if ($permitido): ?>
+                                                <span class="ferro-card__link">
+                                                    <?= $autenticado ? "Abrir módulo" : "Iniciar sesión" ?>
+                                                    <i class="fas fa-arrow-right"></i>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="ferro-card__link ferro-card__link--locked">
+                                                    <i class="fas fa-lock"></i> No tiene permiso
+                                                </span>
+                                            <?php endif; ?>
+                                        <?php if ($permitido): ?>
                                         </a>
+                                        <?php else: ?>
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
