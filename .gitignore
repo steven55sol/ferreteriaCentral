@@ -1,0 +1,11 @@
+# Datos de acceso a la base de datos: NUNCA se suben a GitHub
+config.php
+
+# Archivos del sistema operativo
+.DS_Store
+__MACOSX/
+Thumbs.db
+
+# Respaldos y temporales
+*.bak
+*.tmp
