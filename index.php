@@ -11,7 +11,6 @@ $nombreFerreteria = "Ferretería Central";
 
 // El menú lateral y el botón hamburguesa solo se muestran con sesión activa.
 $ocultarSidebar  = !$autenticado;
-$ocultarBuscador = true;
 
 // Módulos reales del sistema: se muestran como accesos rápidos.
 $modulos = [
@@ -644,7 +643,7 @@ $enlacePanel = $autenticado ? "view/dashboard.php" : "view/login.php";
                 border-radius: 11px;
                 background: rgba(245, 165, 36, 0.12);
                 border: 1px solid rgba(245, 165, 36, 0.25);
-                color: var(--ferro-amber-light);
+                color: #ffffff;
                 font-size: 0.95rem;
             }
 

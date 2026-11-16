@@ -8,15 +8,7 @@
     <a class="navbar-brand ferro-brand ps-3 d-flex align-items-center gap-2" href="<?= $rutaBase ?>index.php">
         <i class="fas fa-screwdriver-wrench"></i> Ferretería Central
     </a>
-    <?php if (empty($ocultarBuscador)): ?>
-        <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-            <div class="input-group">
-                <input class="form-control" type="text" placeholder="Buscar..." />
-                <button class="btn btn-primary" type="button"><i class="fas fa-search"></i></button>
-            </div>
-        </form>
-    <?php endif; ?>
-    <ul class="navbar-nav <?= empty($ocultarBuscador) ? "ms-auto ms-md-0" : "ms-auto" ?> me-3 me-lg-4">
+    <ul class="navbar-nav ms-auto me-3 me-lg-4">
         <?php if (isset($_SESSION["usuario_id"])): ?>
             <!-- Usuario CON sesión activa: mostramos su nombre y la opción de salir -->
             <li class="nav-item dropdown">
